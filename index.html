@@ -237,7 +237,23 @@ footer a { text-decoration: none; }
 const tiles=[...document.querySelectorAll('#gallery button.tile')];
 const lb=document.getElementById('lb'),img=document.getElementById('lbImg'),cap=document.getElementById('lbCap'),cnt=document.getElementById('lbCount');
 let cur=0,lastFocus=null;
-function show(i){cur=(i+tiles.length)%tiles.length;const t=tiles[cur],im=t.querySelector('img');img.src=im.dataset.full||im.src;img.alt=im.alt;cap.textContent=t.querySelector('figcaption span').textContent;cnt.textContent=(cur+1)+' / '+tiles.length;}
+const full=i=>{const im=tiles[i].querySelector('img');return im.dataset.full||im.src;};
+const cache={};
+function preload(i){const u=full(i);if(!cache[u]){const x=new Image();x.src=u;cache[u]=x;}return cache[u];}
+function show(i){
+  cur=(i+tiles.length)%tiles.length;
+  const t=tiles[cur],im=t.querySelector('img'),want=cur,big=preload(cur);
+  // show the grid version of this same photo right away, then swap to full size once it's loaded
+  img.src=(big.complete&&big.naturalWidth)?big.src:(im.currentSrc||im.src);
+  img.alt=im.alt;
+  cap.textContent=t.querySelector('figcaption span').textContent;
+  cnt.textContent=(cur+1)+' / '+tiles.length;
+  if(!(big.complete&&big.naturalWidth)){
+    const swap=()=>{if(cur===want&&!lb.hidden)img.src=big.src;};
+    (big.decode?big.decode():Promise.resolve()).then(swap,swap);
+  }
+  preload((cur+1)%tiles.length);preload((cur-1+tiles.length)%tiles.length);
+}
 function open(i){lastFocus=document.activeElement;show(i);lb.hidden=false;document.getElementById('lbClose').focus();document.body.style.overflow='hidden';}
 function close(){lb.hidden=true;document.body.style.overflow='';lastFocus&&lastFocus.focus();}
 tiles.forEach((t,i)=>t.addEventListener('click',()=>open(i)));
