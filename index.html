@@ -120,10 +120,10 @@ footer { border-top: 1px solid var(--line); padding-block: 28px calc(28px + env(
 footer a { text-decoration: none; }
 
 /* lightbox */
-.lb { position: fixed; inset: 0; z-index: 60; background: rgba(6,6,5,.96); display: grid; grid-template-rows: auto 1fr auto; padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(14px + env(safe-area-inset-bottom, 0px)) var(--gutter); }
+.lb { position: fixed; inset: 0; height: 100dvh; z-index: 60; background: var(--ink); display: grid; grid-template-rows: auto 1fr auto; padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(14px + env(safe-area-inset-bottom, 0px)) var(--gutter); }
 .lb-top, .lb-bot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.lb-stage { display: grid; place-items: center; min-height: 0; padding-block: 12px; }
-.lb-stage img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.lb-stage { position: relative; min-height: 0; margin-block: 12px; }
+.lb-stage img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: contain; }
 .lb button { background: none; border: 1px solid var(--line); color: var(--paper); font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; }
 .lb button:hover { border-color: var(--dim); }
 
@@ -237,7 +237,23 @@ footer a { text-decoration: none; }
 const tiles=[...document.querySelectorAll('#gallery button.tile')];
 const lb=document.getElementById('lb'),img=document.getElementById('lbImg'),cap=document.getElementById('lbCap'),cnt=document.getElementById('lbCount');
 let cur=0,lastFocus=null;
-function show(i){cur=(i+tiles.length)%tiles.length;const t=tiles[cur],im=t.querySelector('img');img.src=im.dataset.full||im.src;img.alt=im.alt;cap.textContent=t.querySelector('figcaption span').textContent;cnt.textContent=(cur+1)+' / '+tiles.length;}
+const full=i=>{const im=tiles[i].querySelector('img');return im.dataset.full||im.src;};
+const cache={};
+function preload(i){const u=full(i);if(!cache[u]){const x=new Image();x.src=u;cache[u]=x;}return cache[u];}
+function show(i){
+  cur=(i+tiles.length)%tiles.length;
+  const t=tiles[cur],im=t.querySelector('img'),want=cur,big=preload(cur);
+  // show the grid version of this same photo right away, then swap to full size once it's loaded
+  img.src=(big.complete&&big.naturalWidth)?big.src:(im.currentSrc||im.src);
+  img.alt=im.alt;
+  cap.textContent=t.querySelector('figcaption span').textContent;
+  cnt.textContent=(cur+1)+' / '+tiles.length;
+  if(!(big.complete&&big.naturalWidth)){
+    const swap=()=>{if(cur===want&&!lb.hidden)img.src=big.src;};
+    (big.decode?big.decode():Promise.resolve()).then(swap,swap);
+  }
+  preload((cur+1)%tiles.length);preload((cur-1+tiles.length)%tiles.length);
+}
 function open(i){lastFocus=document.activeElement;show(i);lb.hidden=false;document.getElementById('lbClose').focus();document.body.style.overflow='hidden';}
 function close(){lb.hidden=true;document.body.style.overflow='';lastFocus&&lastFocus.focus();}
 tiles.forEach((t,i)=>t.addEventListener('click',()=>open(i)));
