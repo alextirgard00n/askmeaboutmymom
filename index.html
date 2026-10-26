@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A one-night exhibition of found footage and photographs of my mom, 1980 to 1990. The Gangway Gallery, June 20.">
+<meta property="og:title" content="ask me about my mom">
+<meta property="og:description" content="A one-night exhibition of found footage and photographs of my mom, 1980 to 1990.">
+<meta property="og:image" content="img/photos/portrait-sm.jpg">
+<meta name="theme-color" content="#0a0a09">
+<title>ask me about my mom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,200..900&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: full-bleed photo opener, then a single quiet column of text, an image wall, footage reels and the night itself. Monochrome, VHS grain over everything. */
+:root {
+  --ink: #0a0a09;
+  --ink-2: #151513;
+  --paper: #e8e5de;
+  --dim: #8d8a83;
+  --line: #2a2926;
+  --rec: #d2483a;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--ink); }
+body { background: var(--ink); color: var(--paper); font-family: var(--body); font-variation-settings: "wdth" 100; font-weight: 300; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--ink); }
+a { color: inherit; }
+img { display: block; max-width: 100%; }
+:focus-visible { outline: 1px solid var(--paper); outline-offset: 3px; }
+
+/* grain + scanlines */
+.grain { position: fixed; inset: -50%; z-index: 50; pointer-events: none; opacity: .09; background-size: 180px; animation: grain 1s steps(6) infinite; }
+.scan { position: fixed; inset: 0; z-index: 49; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(0,0,0,.18) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; }
+@keyframes grain { 0%{transform:translate(0,0)} 20%{transform:translate(-4%,3%)} 40%{transform:translate(3%,-5%)} 60%{transform:translate(-2%,6%)} 80%{transform:translate(5%,1%)} 100%{transform:translate(0,0)} }
+
+.label { font-family: var(--body); font-weight: 300; text-transform: lowercase; letter-spacing: .14em; line-height: 1.25; }
+.mono { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+
+/* nav */
+.nav { position: fixed; top: env(safe-area-inset-top, 0px); left: 0; right: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; padding: 18px var(--gutter-r) 18px var(--gutter); mix-blend-mode: difference; color: #fff; }
+.nav .mark { font-size: 13px; text-decoration: none; }
+.nav ul { display: flex; gap: 22px; list-style: none; margin: 0; padding: 0; }
+.nav ul a { font-size: 12px; text-decoration: none; opacity: .75; }
+.nav ul a:hover { opacity: 1; }
+@media (max-width: 560px) { .nav ul { display: none; } }
+
+/* hero */
+.hero { position: relative; height: 100svh; min-height: 560px; overflow: hidden; background: var(--ink); }
+.hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; filter: grayscale(1) contrast(1.06) brightness(.82); transform: scale(1.06); animation: settle 2.6s cubic-bezier(.2,.7,.2,1) forwards; }
+@keyframes settle { to { transform: scale(1); } }
+.hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(10,10,9,.35), transparent 30%, transparent 62%, rgba(10,10,9,.9)); }
+.hero-title { position: absolute; z-index: 2; left: var(--gutter); bottom: clamp(48px, 9vh, 96px); font-size: clamp(22px, 3.4vw, 40px); }
+.hero-title span { display: block; }
+.hero-title span + span { padding-left: 1.2em; }
+.edge { position: absolute; z-index: 2; writing-mode: vertical-rl; font-size: 12px; color: rgba(232,229,222,.7); }
+.edge.l { left: calc(var(--gutter) - 2px); top: 50%; transform: translateY(-50%) rotate(180deg); }
+.edge.r { right: calc(var(--gutter-r) - 2px); bottom: clamp(48px, 9vh, 96px); }
+.tc { position: absolute; z-index: 2; right: var(--gutter-r); top: calc(64px + env(safe-area-inset-top, 0px)); color: rgba(232,229,222,.8); display: flex; align-items: center; gap: 8px; }
+.tc i { width: 7px; height: 7px; border-radius: 50%; background: var(--rec); animation: blink 1.4s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.cue { position: absolute; z-index: 2; left: 50%; bottom: 22px; transform: translateX(-50%); color: rgba(232,229,222,.55); font-size: 10px; }
+
+/* statement */
+.wrap { padding-left: var(--gutter); padding-right: var(--gutter-r); }
+.statement { padding-block: clamp(80px, 14vw, 160px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 32px; max-width: 1200px; margin: 0 auto; }
+.statement .mono { padding-top: 10px; }
+.statement p { margin: 0 0 1.2em; font-size: clamp(19px, 2.1vw, 26px); line-height: 1.45; max-width: 34ch; text-wrap: pretty; }
+.statement p.small { font-size: 15px; color: var(--dim); max-width: 52ch; }
+@media (max-width: 720px) { .statement { grid-template-columns: 1fr; gap: 16px; } }
+
+/* stacked type */
+.stack { padding-block: 24px clamp(60px, 10vw, 120px); overflow: hidden; }
+.stack-row { display: flex; flex-wrap: wrap; gap: 0 .35em; justify-content: center; font-family: var(--display); font-weight: 800; font-variation-settings: "wdth" 112; text-transform: uppercase; font-size: clamp(44px, 11vw, 150px); line-height: .86; letter-spacing: -.01em; }
+.stack-word { display: grid; }
+.stack-word span:nth-child(1) { color: #3a3935; }
+.stack-word span:nth-child(2) { color: var(--paper); }
+.stack-word span:nth-child(3) { color: #5a5852; }
+
+/* section heads */
+.head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-top: 1px solid var(--line); padding-block: 18px 28px; max-width: 1400px; margin: 0 auto; }
+.head h2 { margin: 0; font-size: clamp(20px, 2.4vw, 28px); font-weight: 300; }
+
+/* gallery */
+.gallery { max-width: 1400px; margin: 0 auto; columns: 2 300px; column-gap: 12px; padding-bottom: clamp(80px, 12vw, 140px); }
+.tile { break-inside: avoid; margin: 0 0 12px; position: relative; cursor: zoom-in; background: var(--ink-2); overflow: hidden; display: block; width: 100%; padding: 0; border: 0; color: inherit; text-align: left; }
+.tile img { width: 100%; height: auto; filter: grayscale(1) contrast(1.05); transition: filter .7s ease, transform .9s cubic-bezier(.2,.7,.2,1); }
+.tile:hover img, .tile:focus-visible img, .tile.on img { filter: grayscale(0) contrast(1); transform: scale(1.02); }
+.tile figcaption { position: absolute; left: 10px; bottom: 8px; right: 10px; display: flex; justify-content: space-between; color: rgba(232,229,222,.85); font-family: var(--mono); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; text-shadow: 0 1px 6px rgba(0,0,0,.7); }
+.ph { aspect-ratio: 4/5; display: grid; place-items: center; border: 1px dashed var(--line); background: repeating-linear-gradient(135deg, var(--ink-2) 0 10px, var(--ink) 10px 20px); }
+.ph.wide { aspect-ratio: 4/3; }
+.ph .mono { text-align: center; }
+
+/* footage */
+.reels { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; padding-bottom: clamp(80px, 12vw, 140px); }
+@media (max-width: 900px) { .reels { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+.reel { position: relative; aspect-ratio: 9/14; overflow: hidden; background: var(--ink-2); }
+.reel img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.55) contrast(1.1); }
+.reel::after { content: ""; position: absolute; inset: 0; background: linear-gradient(transparent 55%, rgba(10,10,9,.85)); }
+.reel .play { position: absolute; z-index: 2; top: 50%; left: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border: 1px solid rgba(232,229,222,.7); border-radius: 50%; display: grid; place-items: center; }
+.reel .play::before { content: ""; border-left: 12px solid var(--paper); border-top: 7px solid transparent; border-bottom: 7px solid transparent; margin-left: 3px; }
+.reel .meta { position: absolute; z-index: 2; left: 10px; right: 10px; bottom: 10px; display: flex; justify-content: space-between; gap: 8px; color: rgba(232,229,222,.85); }
+.reel .meta span:first-child { font-size: 14px; }
+
+/* the night */
+.night { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr; grid-auto-rows: minmax(0, auto); gap: 12px; padding-bottom: 24px; }
+.night .ph:first-child { grid-row: span 2; aspect-ratio: auto; min-height: 420px; }
+@media (max-width: 720px) { .night { grid-template-columns: 1fr 1fr; } .night .ph:first-child { grid-column: span 2; grid-row: auto; min-height: 280px; } }
+.night-note { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(80px, 12vw, 140px); color: var(--dim); font-size: 15px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px)); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; max-width: 1400px; margin: 0 auto; }
+footer a { text-decoration: none; }
+
+/* lightbox */
+.lb { position: fixed; inset: 0; z-index: 60; background: rgba(6,6,5,.96); display: grid; grid-template-rows: auto 1fr auto; padding: calc(14px + env(safe-area-inset-top, 0px)) var(--gutter-r) calc(14px + env(safe-area-inset-bottom, 0px)) var(--gutter); }
+.lb-top, .lb-bot { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.lb-stage { display: grid; place-items: center; min-height: 0; padding-block: 12px; }
+.lb-stage img { max-height: 100%; max-width: 100%; object-fit: contain; }
+.lb button { background: none; border: 1px solid var(--line); color: var(--paper); font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 10px 14px; cursor: pointer; }
+.lb button:hover { border-color: var(--dim); }
+
+@media (prefers-reduced-motion: reduce) {
+  .grain, .hero img, .tc i { animation: none; }
+  .hero img { transform: none; }
+  .tile img { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="grain" id="grain" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+
+<nav class="nav">
+  <a class="mark label" href="#top">ask me about my mom</a>
+  <ul class="label">
+    <li><a href="#about">about</a></li>
+    <li><a href="#photos">photos</a></li>
+    <li><a href="#footage">footage</a></li>
+    <li><a href="#night">june 20</a></li>
+  </ul>
+</nav>
+
+<header class="hero" id="top">
+  <img src="img/photos/portrait.jpg" alt="Black and white portrait of her in a loose white blouse" fetchpriority="high">
+  <div class="tc mono"><i></i>play · sp · 1980–1990</div>
+  <div class="edge l mono">the gangway gallery · one night only</div>
+  <h1 class="hero-title label"><span>ask me about</span><span>my mom</span></h1>
+  <div class="edge r mono">saturday · june 20 · 5:00–9:00 pm</div>
+  <div class="cue mono">scroll</div>
+</header>
+
+<main>
+  <section class="wrap" id="about">
+    <div class="statement">
+      <div class="mono">a one-night exhibition</div>
+      <div>
+        <p>Found footage of my mom from 1980 to 1990. A one-night, multimedia exhibition examining a decade of emboldened creativity through her image.</p>
+        <p>Explore who she was, and who she could have been, and how all of our parents shape a collective nostalgia we chase.</p>
+        <p class="small">Shown for one night at The Gangway Gallery, June 20, 5 to 9 pm. This site keeps the work up after the walls came down.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="stack wrap" aria-label="ask me about my mom">
+    <div class="stack-row" aria-hidden="true">
+      <div class="stack-word"><span>ask</span><span>ask</span><span>ask</span></div>
+      <div class="stack-word"><span>me</span><span>me</span><span>me</span></div>
+      <div class="stack-word"><span>about</span><span>about</span><span>about</span></div>
+      <div class="stack-word"><span>my mom</span><span>my mom</span><span>my mom</span></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="photos">
+    <div class="head"><h2 class="label">photographs</h2><span class="mono">tap a photo to open it</span></div>
+    <div class="gallery" id="gallery">
+      <button class="tile" type="button"><img src="img/photos/portrait-sm.jpg" data-full="img/photos/portrait.jpg" width="1010" height="1280" alt="Studio portrait in a loose white blouse" loading="lazy"><figcaption><span>portrait</span><span>b&amp;w</span></figcaption></button>
+      <button class="tile" type="button"><img src="img/photos/beach3-sm.jpg" data-full="img/photos/beach3.jpg" width="890" height="1280" alt="Sitting at the water's edge at dusk in a sheer white shirt" loading="lazy"><figcaption><span>shoreline</span><span>color</span></figcaption></button>
+      <button class="tile" type="button"><img src="img/photos/corona-sm.jpg" data-full="img/photos/corona.jpg" width="1280" height="1010" alt="Sitting on the pavement in front of a car at night with a bottle in hand" loading="lazy"><figcaption><span>parking lot</span><span>b&amp;w</span></figcaption></button>
+      <button class="tile" type="button"><img src="img/photos/poledance-sm.jpg" data-full="img/photos/poledance.jpg" width="1010" height="1280" alt="Studio photo against a black backdrop, one arm raised over her head" loading="lazy"><figcaption><span>studio</span><span>b&amp;w</span></figcaption></button>
+    </div>
+  </section>
+
+  <section class="wrap" id="footage">
+    <div class="head"><h2 class="label">footage</h2><span class="mono">found tapes · 1980–1990</span></div>
+    <div class="reels">
+      <div class="reel"><img src="img/footage/stage.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">the set</span><span class="mono">0:42</span></div></div>
+      <div class="reel"><img src="img/footage/mic.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">mic check</span><span class="mono">0:27</span></div></div>
+      <div class="reel"><img src="img/footage/hall.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">the backrooms</span><span class="mono">0:19</span></div></div>
+      <div class="reel"><img src="img/footage/closeup.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">watching you</span><span class="mono">0:35</span></div></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="night">
+    <div class="head"><h2 class="label">june 20, the night</h2><span class="mono">the gangway gallery</span></div>
+    <div class="night">
+      <div class="ph"><span class="mono">wide shot of the room</span></div>
+      <div class="ph"><span class="mono">opening photo</span></div>
+      <div class="ph"><span class="mono">opening photo</span></div>
+      <div class="ph"><span class="mono">opening photo</span></div>
+      <div class="ph"><span class="mono">opening photo</span></div>
+    </div>
+    <p class="night-note label">photos from the opening, 5–9 pm</p>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a class="label" href="https://www.instagram.com/askmeaboutmymom/">@askmeaboutmymom</a>
+      <span class="mono">1980 — 1990 · shown once</span>
+    </footer>
+  </div>
+</main>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lb-top"><span class="mono" id="lbCount">1 / 6</span><button id="lbClose" type="button">close</button></div>
+  <div class="lb-stage" id="lbStage"><img id="lbImg" alt=""></div>
+  <div class="lb-bot"><button id="lbPrev" type="button">prev</button><span class="label" id="lbCap"></span><button id="lbNext" type="button">next</button></div>
+</div>
+
+<script>
+// grain texture, generated once
+(function(){
+  const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');
+  const d=x.createImageData(180,180);
+  for(let i=0;i<d.data.length;i+=4){const v=Math.random()*255;d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255;}
+  x.putImageData(d,0,0);document.getElementById('grain').style.backgroundImage='url('+c.toDataURL()+')';
+})();
+
+// lightbox
+const tiles=[...document.querySelectorAll('#gallery button.tile')];
+const lb=document.getElementById('lb'),img=document.getElementById('lbImg'),cap=document.getElementById('lbCap'),cnt=document.getElementById('lbCount');
+let cur=0,lastFocus=null;
+function show(i){cur=(i+tiles.length)%tiles.length;const t=tiles[cur],im=t.querySelector('img');img.src=im.dataset.full||im.src;img.alt=im.alt;cap.textContent=t.querySelector('figcaption span').textContent;cnt.textContent=(cur+1)+' / '+tiles.length;}
+function open(i){lastFocus=document.activeElement;show(i);lb.hidden=false;document.getElementById('lbClose').focus();document.body.style.overflow='hidden';}
+function close(){lb.hidden=true;document.body.style.overflow='';lastFocus&&lastFocus.focus();}
+tiles.forEach((t,i)=>t.addEventListener('click',()=>open(i)));
+document.getElementById('lbClose').onclick=close;
+document.getElementById('lbPrev').onclick=()=>show(cur-1);
+document.getElementById('lbNext').onclick=()=>show(cur+1);
+lb.addEventListener('click',e=>{if(e.target===lb||e.target.id==='lbStage')close();});
+document.addEventListener('keydown',e=>{if(lb.hidden)return;if(e.key==='Escape')close();if(e.key==='ArrowLeft')show(cur-1);if(e.key==='ArrowRight')show(cur+1);});
+let sx=null;lb.addEventListener('touchstart',e=>{sx=e.touches[0].clientX},{passive:true});
+lb.addEventListener('touchend',e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(cur+(dx<0?1:-1));sx=null;});
+
+// on phones, color bleeds in as a photo scrolls to the middle of the screen
+if(matchMedia('(hover: none)').matches&&'IntersectionObserver' in window){
+  const io=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('on',e.isIntersecting)),{rootMargin:'-40% 0px -40% 0px'});
+  tiles.forEach(t=>io.observe(t));
+}
+</script>
+</body>
+</html>
