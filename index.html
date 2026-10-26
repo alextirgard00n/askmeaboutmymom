@@ -72,11 +72,9 @@ img { display: block; max-width: 100%; }
 
 /* statement */
 .wrap { padding-left: var(--gutter); padding-right: var(--gutter-r); }
-.statement { padding-block: clamp(80px, 14vw, 160px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 32px; max-width: 1200px; margin: 0 auto; }
-.statement .mono { padding-top: 10px; }
-.statement p { margin: 0 0 1.2em; font-size: clamp(19px, 2.1vw, 26px); line-height: 1.45; max-width: 34ch; text-wrap: pretty; }
+.statement { padding-block: clamp(80px, 14vw, 160px); max-width: 760px; margin: 0 auto; text-align: center; }
+.statement p { margin: 0 auto 1.2em; font-size: clamp(19px, 2.1vw, 26px); line-height: 1.45; max-width: 34ch; text-wrap: pretty; }
 .statement p.small { font-size: 15px; color: var(--dim); max-width: 52ch; }
-@media (max-width: 720px) { .statement { grid-template-columns: 1fr; gap: 16px; } }
 
 /* stacked type */
 .stack { padding-block: 24px clamp(60px, 10vw, 120px); overflow: hidden; }
@@ -221,7 +219,6 @@ footer { max-width: 1400px; margin: 0 auto; border-top: 1px solid var(--line); p
 <main>
   <section class="wrap" id="about">
     <div class="statement">
-      <div class="mono">a one-night exhibition</div>
       <div>
         <p>Found footage of my mom from 1980 to 1990. A one-night, multimedia exhibition examining a decade of emboldened creativity through her image.</p>
         <p>Explore who she was, and who she could have been, and how all of our parents shape a collective nostalgia we chase.</p>
