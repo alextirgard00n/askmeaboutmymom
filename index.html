@@ -156,20 +156,6 @@ footer a { text-decoration: none; }
   100% { color: var(--c); }
 }
 
-/* 4. footage tiles flicker on with tracking noise */
-.fx .reel:not(.on) { opacity: 0; }
-.fx .reel.on { animation: vhs .9s steps(1, end) both; animation-delay: var(--d, 0s); }
-.fx .reel.on::before { content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none; background: repeating-linear-gradient(to bottom, rgba(232,229,222,.5) 0 2px, transparent 2px 9px); mix-blend-mode: overlay; animation: roll .9s linear both; animation-delay: var(--d, 0s); }
-@keyframes vhs {
-  0%   { opacity: 1; filter: brightness(2.2) contrast(.6); transform: translateX(-8px) skewX(-6deg); }
-  12%  { opacity: 0; }
-  24%  { opacity: 1; filter: brightness(1.4); transform: translateX(6px); clip-path: inset(30% 0 20% 0); }
-  36%  { opacity: 1; filter: brightness(.6); transform: none; clip-path: none; }
-  48%  { filter: brightness(1.6) saturate(0); transform: translateX(-3px); }
-  60%  { filter: none; transform: none; }
-  100% { opacity: 1; filter: none; transform: none; }
-}
-@keyframes roll { from { transform: translateY(-40%); opacity: 1; } to { transform: translateY(40%); opacity: 0; } }
 
 @media (prefers-reduced-motion: reduce) {
   .grain, .hero img, .tc i { animation: none; }
@@ -320,7 +306,7 @@ if(matchMedia('(hover: none)').matches&&'IntersectionObserver' in window){
   document.documentElement.classList.add('fx');
 
   // 1. fade and rise, with lines in a group coming in one after another
-  const groups = [['.statement .mono', '.statement p'], ['#photos .head'], ['#footage .head'], ['#night .head'], ['.night .ph'], ['.night-note'], ['footer']];
+  const groups = [['.statement .mono', '.statement p'], ['#photos .head'], ['#footage .head'], ['.reel'], ['#night .head'], ['.night .ph'], ['.night-note'], ['footer']];
   groups.forEach(g => document.querySelectorAll(g.join(',')).forEach((el, i) => { el.classList.add('rv'); el.style.setProperty('--d', (i * 0.12) + 's'); }));
   const once = (sel, cls, opts, each) => {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add(cls); each && each(e.target); io.unobserve(e.target); } }), opts);
@@ -339,9 +325,6 @@ if(matchMedia('(hover: none)').matches&&'IntersectionObserver' in window){
     st.querySelectorAll('.stack-word span').forEach((sp, i) => setTimeout(() => sp.classList.add('on'), i * 140));
   });
 
-  // 4. footage tiles flicker on, left to right
-  document.querySelectorAll('.reel').forEach((r, i) => r.style.setProperty('--d', (i * 0.15) + 's'));
-  once('.reels', 'seen', { rootMargin: '0px 0px -15% 0px' }, rs => rs.querySelectorAll('.reel').forEach(r => r.classList.add('on')));
 
   // 5. dust drifting in the projector light
   const c = document.createElement('canvas'); c.id = 'dust'; c.setAttribute('aria-hidden', 'true');
