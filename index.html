@@ -118,10 +118,9 @@ img { display: block; max-width: 100%; }
 .night-note { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(80px, 12vw, 140px); color: var(--dim); font-size: 15px; }
 
 /* soundtrack */
-.sound { max-width: 1200px; margin: 0 auto; padding-bottom: clamp(60px, 10vw, 120px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 32px; }
-.sound .mono { padding-top: 10px; }
-.sound iframe { display: block; width: 100%; max-width: 640px; height: 352px; border: 0; border-radius: 12px; background: var(--ink-2); }
-@media (max-width: 720px) { .sound { grid-template-columns: 1fr; gap: 16px; } }
+.sound { max-width: 1400px; margin: 0 auto; padding-bottom: clamp(80px, 12vw, 140px); }
+.sound iframe { display: block; width: 100%; max-width: 960px; height: 480px; margin: 0 auto; border: 0; border-radius: 12px; background: var(--ink-2); }
+@media (max-width: 720px) { .sound iframe { height: 420px; } }
 
 /* footer */
 footer { max-width: 1400px; margin: 0 auto; border-top: 1px solid var(--line); padding-block: 56px calc(28px + env(safe-area-inset-bottom, 0px)); }
@@ -226,13 +225,6 @@ footer { max-width: 1400px; margin: 0 auto; border-top: 1px solid var(--line); p
     </div>
   </section>
 
-  <section class="wrap" id="soundtrack">
-    <div class="sound">
-      <div class="mono">soundtrack</div>
-      <iframe title="Soundtrack on Spotify" src="https://open.spotify.com/embed/artist/2UXXBKdo0RpJl8Ia6xg3wf?utm_source=generator&amp;theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
-  </section>
-
   <section class="stack wrap" aria-label="ask me about my mom">
     <div class="stack-row" aria-hidden="true">
       <div class="stack-word"><span>ask me</span><span>ask me</span><span>ask me</span></div>
@@ -258,6 +250,13 @@ footer { max-width: 1400px; margin: 0 auto; border-top: 1px solid var(--line); p
       <div class="reel"><img src="img/footage/mic.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">mic check</span><span class="mono">0:27</span></div></div>
       <div class="reel"><img src="img/footage/hall.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">the backrooms</span><span class="mono">0:19</span></div></div>
       <div class="reel"><img src="img/footage/closeup.jpg" alt="" loading="lazy"><span class="play"></span><div class="meta"><span class="label">watching you</span><span class="mono">0:35</span></div></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="soundtrack">
+    <div class="sound">
+      <div class="head"><h2 class="label">soundtrack</h2><span class="mono">found tapes, found songs</span></div>
+      <iframe title="Soundtrack on Spotify" src="https://open.spotify.com/embed/artist/2UXXBKdo0RpJl8Ia6xg3wf?utm_source=generator&amp;theme=0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
   </section>
 
@@ -378,7 +377,7 @@ document.getElementById('newsForm').addEventListener('submit', e => {
   document.documentElement.classList.add('fx');
 
   // 1. fade and rise, with lines in a group coming in one after another
-  const groups = [['.statement .mono', '.statement p'], ['#photos .head'], ['#footage .head'], ['.reel'], ['#night .head'], ['.night .ph'], ['.night-note'], ['.sound .mono', '.sound iframe'], ['.foot-cols > div'], ['.foot-base']];
+  const groups = [['.statement .mono', '.statement p'], ['#photos .head'], ['#footage .head'], ['.reel'], ['#night .head'], ['.night .ph'], ['.night-note'], ['#soundtrack .head', '.sound iframe'], ['.foot-cols > div'], ['.foot-base']];
   groups.forEach(g => document.querySelectorAll(g.join(',')).forEach((el, i) => { el.classList.add('rv'); el.style.setProperty('--d', (i * 0.12) + 's'); }));
   const once = (sel, cls, opts, each) => {
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add(cls); each && each(e.target); io.unobserve(e.target); } }), opts);
