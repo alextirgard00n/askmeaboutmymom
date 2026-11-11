@@ -124,7 +124,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     ['.statement .mono', '.statement p'],
     ['#photos .head'],
     ['#footage .head'],
-    ['.reel'],
+    ['.tape'],
     ['#night .head'],
     ['.night .ph'],
     ['.night-note'],
@@ -230,4 +230,36 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     last = t;
     step(t);
   });
+})();
+
+// footage player: plays muted while on screen; tap for sound and full controls
+(function () {
+  const fig = document.getElementById('tape');
+  const v = document.getElementById('tapeVideo');
+  const btn = document.getElementById('tapeSound');
+  const txt = document.getElementById('tapeSoundText');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (still) v.controls = true;
+
+  btn.addEventListener('click', () => {
+    v.muted = !v.muted;
+    if (!v.muted) {
+      v.controls = true;
+      v.play().catch(() => {});
+    }
+    fig.classList.toggle('sound-on', !v.muted);
+    txt.textContent = v.muted ? 'tap for sound' : 'sound off';
+    btn.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Turn sound off');
+  });
+
+  if (!still && 'IntersectionObserver' in window) {
+    new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (e.isIntersecting) v.play().catch(() => {});
+          else v.pause();
+        }),
+      { threshold: 0.35 },
+    ).observe(v);
+  }
 })();

@@ -1,4 +1,4 @@
-/* Layout: full-bleed photo opener, then a single quiet column of text, an image wall, footage reels and the night itself. Monochrome, VHS grain over everything. */
+/* Layout: full-bleed photo opener, then a single quiet column of text, an image wall, footage and the night itself. Monochrome, VHS grain over everything. */
 :root {
   --ink: #0a0a09;
   --ink-2: #151513;
@@ -389,69 +389,74 @@ img {
 }
 
 /* footage */
-.reels {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  padding-bottom: clamp(80px, 12vw, 140px);
-}
-@media (max-width: 900px) {
-  .reels {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-.reel {
+.tape {
   position: relative;
-  aspect-ratio: 9/14;
-  overflow: hidden;
+  max-width: 960px;
+  margin: 0 auto clamp(80px, 12vw, 140px);
   background: var(--ink-2);
+  aspect-ratio: 720 / 528;
+  overflow: hidden;
 }
-.reel img {
+.tape video {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.55) contrast(1.1);
+  background: var(--ink-2);
 }
-.reel::after {
+.tape::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(transparent 55%, rgba(10, 10, 9, 0.85));
+  pointer-events: none;
+  background: linear-gradient(transparent 70%, rgba(10, 10, 9, 0.75));
 }
-.reel .play {
+.tape.sound-on::after,
+.tape.sound-on .tape-meta {
+  opacity: 0;
+}
+.tape-sound {
   position: absolute;
   z-index: 2;
-  top: 50%;
-  left: 50%;
-  width: 52px;
-  height: 52px;
-  margin: -26px 0 0 -26px;
-  border: 1px solid rgba(232, 229, 222, 0.7);
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(232, 229, 222, 0.35);
+  background: rgba(10, 10, 9, 0.55);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.tape-sound:hover {
+  border-color: var(--paper);
+}
+.tape-rec {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
+  background: var(--rec);
+  animation: blink 1.4s steps(2) infinite;
 }
-.reel .play::before {
-  content: '';
-  border-left: 12px solid var(--paper);
-  border-top: 7px solid transparent;
-  border-bottom: 7px solid transparent;
-  margin-left: 3px;
-}
-.reel .meta {
+.tape-meta {
   position: absolute;
   z-index: 2;
-  left: 10px;
-  right: 10px;
-  bottom: 10px;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
   color: rgba(232, 229, 222, 0.85);
+  pointer-events: none;
+  transition: opacity 0.3s;
 }
-.reel .meta span:first-child {
+.tape-meta .label {
   font-size: 14px;
 }
 

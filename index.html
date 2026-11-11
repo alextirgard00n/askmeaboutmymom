@@ -159,34 +159,25 @@
           <h2 class="label">footage</h2>
           <span class="mono">found tapes · 1980–1990</span>
         </div>
-        <div class="reels">
-          <div class="reel">
-            <img src="media/img/footage/stage.jpg" alt="" loading="lazy" /><span
-              class="play"
-            ></span>
-            <div class="meta"><span class="label">the set</span><span class="mono">0:42</span></div>
-          </div>
-          <div class="reel">
-            <img src="media/img/footage/mic.jpg" alt="" loading="lazy" /><span class="play"></span>
-            <div class="meta">
-              <span class="label">mic check</span><span class="mono">0:27</span>
-            </div>
-          </div>
-          <div class="reel">
-            <img src="media/img/footage/hall.jpg" alt="" loading="lazy" /><span class="play"></span>
-            <div class="meta">
-              <span class="label">the backrooms</span><span class="mono">0:19</span>
-            </div>
-          </div>
-          <div class="reel">
-            <img src="media/img/footage/closeup.jpg" alt="" loading="lazy" /><span
-              class="play"
-            ></span>
-            <div class="meta">
-              <span class="label">watching you</span><span class="mono">0:35</span>
-            </div>
-          </div>
-        </div>
+        <figure class="tape" id="tape">
+          <video
+            id="tapeVideo"
+            src="media/video/found-tapes.mp4"
+            poster="media/video/found-tapes-poster.jpg"
+            width="720"
+            height="528"
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          ></video>
+          <button class="tape-sound" id="tapeSound" type="button" aria-label="Turn sound on">
+            <span class="tape-rec"></span><span id="tapeSoundText">tap for sound</span>
+          </button>
+          <figcaption class="tape-meta">
+            <span class="label">found tapes, 1980–1990</span><span class="mono">0:59</span>
+          </figcaption>
+        </figure>
       </section>
 
       <section class="wrap" id="soundtrack">
