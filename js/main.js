@@ -14,7 +14,9 @@
 })();
 
 // lightbox
-const tiles = [...document.querySelectorAll('#gallery button.tile')];
+// each photo group (the gallery, the night) gets its own viewer sequence
+const groups = [...document.querySelectorAll('#gallery, .night')].map((g) => [...g.querySelectorAll('button.tile')]);
+let tiles = groups[0];
 const lb = document.getElementById('lb'),
   img = document.getElementById('lbImg'),
   cap = document.getElementById('lbCap'),
@@ -61,13 +63,24 @@ function open(i) {
   lb.hidden = false;
   document.getElementById('lbClose').focus();
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('viewing');
+  document.dispatchEvent(new Event('viewer:open'));
 }
 function close() {
   lb.hidden = true;
   document.body.style.overflow = '';
+  document.body.classList.remove('viewing');
+  document.dispatchEvent(new Event('viewer:close'));
   lastFocus && lastFocus.focus();
 }
-tiles.forEach((t, i) => t.addEventListener('click', () => open(i)));
+groups.forEach((g) =>
+  g.forEach((t, i) =>
+    t.addEventListener('click', () => {
+      tiles = g;
+      open(i);
+    }),
+  ),
+);
 document.getElementById('lbClose').onclick = close;
 document.getElementById('lbPrev').onclick = () => show(cur - 1);
 document.getElementById('lbNext').onclick = () => show(cur + 1);
@@ -101,7 +114,7 @@ if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
     (es) => es.forEach((e) => e.target.classList.toggle('on', e.isIntersecting)),
     { rootMargin: '-40% 0px -40% 0px' },
   );
-  tiles.forEach((t) => io.observe(t));
+  groups.flat().forEach((t) => io.observe(t));
 }
 // mailing list (placeholder until a sign-up service is connected)
 document.getElementById('newsForm').addEventListener('submit', (e) => {
@@ -123,10 +136,9 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   const groups = [
     ['.statement .mono', '.statement p'],
     ['#photos .head'],
-    ['#footage .head'],
+    ['.tape-banner-text'],
     ['.reel'],
     ['#night .head'],
-    ['.night .ph'],
     ['.night-note'],
     ['#soundtrack .head', '.sound iframe'],
     ['.foot-cols > div'],
@@ -155,7 +167,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   once('.rv', 'in', { rootMargin: '0px 0px -12% 0px' });
 
   // 2. photos develop once their image has loaded and they're well on screen
-  once('#gallery .tile', 'seen', { rootMargin: '0px 0px -18% 0px' }, (t) => {
+  once('#gallery .tile, .night .tile', 'seen', { rootMargin: '0px 0px -18% 0px' }, (t) => {
     const im = t.querySelector('img'),
       go = () => setTimeout(() => t.classList.add('dev'), 120);
     im.complete && im.naturalWidth ? go() : im.addEventListener('load', go, { once: true });
@@ -176,7 +188,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   const x = c.getContext('2d');
   let W, H, dpr, motes;
   function size() {
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = 1; // specks are tiny, full retina resolution isn't needed
     W = innerWidth;
     H = innerHeight;
     c.width = W * dpr;
@@ -205,7 +217,11 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   });
   function step(ts) {
     if (!on) return;
-    const dt = Math.min(ts - last, 50) / 16.7;
+    if (document.body.classList.contains('viewing') || ts - last < 33) {
+      requestAnimationFrame(step); // hold at ~30 fps, and freeze behind open viewers
+      return;
+    }
+    const dt = Math.min(ts - last, 100) / 16.7;
     last = ts;
     x.clearRect(0, 0, W, H);
     for (const m of motes) {
@@ -229,5 +245,97 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   requestAnimationFrame((t) => {
     last = t;
     step(t);
+  });
+})();
+
+// footage: banner plays muted while on screen; cards and the banner button open the video viewer
+(function () {
+  const banner = document.getElementById('bannerVideo');
+  const vb = document.getElementById('vb');
+  const vbVideo = document.getElementById('vbVideo');
+  const vbTitle = document.getElementById('vbTitle');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastFocus = null;
+  let inView = false;
+
+  // the banner video only starts downloading once the visitor scrolls close to it,
+  // then fades in once its first frame is ready
+  function loadBanner() {
+    if (banner.src) return;
+    banner.addEventListener(
+      'loadeddata',
+      () => {
+        banner.classList.add('ready');
+        if (inView && vb.hidden && !still) banner.play().catch(() => {});
+      },
+      { once: true },
+    );
+    banner.preload = 'auto';
+    banner.src = banner.dataset.src;
+  }
+
+  if ('IntersectionObserver' in window) {
+    const near = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          loadBanner();
+          near.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px 50% 0px' },
+    );
+    near.observe(banner);
+
+    if (!still) {
+      new IntersectionObserver(
+        (es) =>
+          es.forEach((e) => {
+            inView = e.isIntersecting;
+            if (inView && vb.hidden && banner.src) banner.play().catch(() => {});
+            else banner.pause();
+          }),
+        { threshold: 0.25 },
+      ).observe(banner);
+    }
+  } else {
+    loadBanner();
+  }
+
+  document.addEventListener('viewer:open', () => banner.pause());
+  document.addEventListener('viewer:close', () => {
+    if (inView && vb.hidden && !still && banner.src) banner.play().catch(() => {});
+  });
+
+  function openVideo(src, title) {
+    lastFocus = document.activeElement;
+    banner.pause();
+    vbTitle.textContent = title || '';
+    vbVideo.src = src;
+    vb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('viewing');
+    vbVideo.play().catch(() => {});
+    document.getElementById('vbClose').focus();
+  }
+  function closeVideo() {
+    vbVideo.pause();
+    vbVideo.removeAttribute('src');
+    vbVideo.load();
+    vb.hidden = true;
+    document.body.style.overflow = '';
+    document.body.classList.remove('viewing');
+    if (!still && banner.src) banner.play().catch(() => {});
+    lastFocus && lastFocus.focus();
+  }
+
+  document.querySelectorAll('[data-video]').forEach((el) =>
+    el.addEventListener('click', () => openVideo(el.dataset.video, el.dataset.title)),
+  );
+  document.getElementById('vbClose').addEventListener('click', closeVideo);
+  vb.addEventListener('click', (e) => {
+    if (e.target === vb) closeVideo();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!vb.hidden && e.key === 'Escape') closeVideo();
   });
 })();
