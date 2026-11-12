@@ -285,7 +285,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   const unblock = () => {
     if (banner.paused) tryPlay();
   };
-  document.addEventListener('touchstart', unblock, { passive: true });
+  document.addEventListener('touchend', unblock, { passive: true });
   document.addEventListener('click', unblock);
 
   if ('IntersectionObserver' in window) {
