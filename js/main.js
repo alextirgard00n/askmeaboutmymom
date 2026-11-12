@@ -252,7 +252,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   });
 })();
 
-// footage: banner plays muted while on screen; cards and the banner button open the video viewer
+// footage: banner plays muted while on screen; the cards open the video viewer
 (function () {
   const banner = document.getElementById('bannerVideo');
   const vb = document.getElementById('vb');
@@ -264,19 +264,29 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
 
   // the banner video only starts downloading once the visitor scrolls close to it,
   // then fades in once its first frame is ready
+  function tryPlay() {
+    if (inView && vb.hidden && !still && banner.src) banner.play().catch(() => {});
+  }
+  // the banner only starts downloading once the visitor scrolls close to it.
+  // A still from the video shows first, so the banner is never blank, even when the
+  // phone blocks autoplay (iPhone Low Power Mode) or the visitor has reduced motion on.
   function loadBanner() {
     if (banner.src) return;
-    banner.addEventListener(
-      'loadeddata',
-      () => {
-        banner.classList.add('ready');
-        if (inView && vb.hidden && !still) banner.play().catch(() => {});
-      },
-      { once: true },
-    );
+    const still0 = new Image();
+    still0.onload = () => banner.classList.add('ready');
+    still0.src = banner.dataset.poster;
+    banner.poster = banner.dataset.poster;
+    banner.addEventListener('loadeddata', () => banner.classList.add('ready'), { once: true });
     banner.preload = 'auto';
     banner.src = banner.dataset.src;
+    tryPlay();
   }
+  // if autoplay was blocked, start it on the visitor's first tap or click anywhere
+  const unblock = () => {
+    if (banner.paused) tryPlay();
+  };
+  document.addEventListener('touchstart', unblock, { passive: true });
+  document.addEventListener('click', unblock);
 
   if ('IntersectionObserver' in window) {
     const near = new IntersectionObserver(
@@ -295,7 +305,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
         (es) =>
           es.forEach((e) => {
             inView = e.isIntersecting;
-            if (inView && vb.hidden && banner.src) banner.play().catch(() => {});
+            if (inView) tryPlay();
             else banner.pause();
           }),
         { threshold: 0.25 },
@@ -306,9 +316,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   }
 
   document.addEventListener('viewer:open', () => banner.pause());
-  document.addEventListener('viewer:close', () => {
-    if (inView && vb.hidden && !still && banner.src) banner.play().catch(() => {});
-  });
+  document.addEventListener('viewer:close', tryPlay);
 
   function openVideo(src, title) {
     lastFocus = document.activeElement;
@@ -328,7 +336,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     vb.hidden = true;
     document.body.style.overflow = '';
     document.body.classList.remove('viewing');
-    if (!still && banner.src) banner.play().catch(() => {});
+    tryPlay();
     lastFocus && lastFocus.focus();
   }
 
