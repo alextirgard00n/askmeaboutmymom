@@ -61,10 +61,14 @@ function open(i) {
   lb.hidden = false;
   document.getElementById('lbClose').focus();
   document.body.style.overflow = 'hidden';
+  document.body.classList.add('viewing');
+  document.dispatchEvent(new Event('viewer:open'));
 }
 function close() {
   lb.hidden = true;
   document.body.style.overflow = '';
+  document.body.classList.remove('viewing');
+  document.dispatchEvent(new Event('viewer:close'));
   lastFocus && lastFocus.focus();
 }
 tiles.forEach((t, i) => t.addEventListener('click', () => open(i)));
@@ -176,7 +180,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   const x = c.getContext('2d');
   let W, H, dpr, motes;
   function size() {
-    dpr = Math.min(devicePixelRatio || 1, 2);
+    dpr = 1; // specks are tiny, full retina resolution isn't needed
     W = innerWidth;
     H = innerHeight;
     c.width = W * dpr;
@@ -205,7 +209,11 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   });
   function step(ts) {
     if (!on) return;
-    const dt = Math.min(ts - last, 50) / 16.7;
+    if (document.body.classList.contains('viewing') || ts - last < 33) {
+      requestAnimationFrame(step); // hold at ~30 fps, and freeze behind open viewers
+      return;
+    }
+    const dt = Math.min(ts - last, 100) / 16.7;
     last = ts;
     x.clearRect(0, 0, W, H);
     for (const m of motes) {
@@ -285,6 +293,11 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     loadBanner();
   }
 
+  document.addEventListener('viewer:open', () => banner.pause());
+  document.addEventListener('viewer:close', () => {
+    if (inView && vb.hidden && !still && banner.src) banner.play().catch(() => {});
+  });
+
   function openVideo(src, title) {
     lastFocus = document.activeElement;
     banner.pause();
@@ -292,6 +305,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     vbVideo.src = src;
     vb.hidden = false;
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('viewing');
     vbVideo.play().catch(() => {});
     document.getElementById('vbClose').focus();
   }
@@ -301,6 +315,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     vbVideo.load();
     vb.hidden = true;
     document.body.style.overflow = '';
+    document.body.classList.remove('viewing');
     if (!still && banner.src) banner.play().catch(() => {});
     lastFocus && lastFocus.focus();
   }

@@ -57,11 +57,12 @@ img {
 /* grain + scanlines */
 .grain {
   position: fixed;
-  inset: -50%;
+  inset: -12%;
   z-index: 50;
   pointer-events: none;
   opacity: 0.09;
   background-size: 180px;
+  will-change: transform;
   animation: grain 1s steps(6) infinite;
 }
 .scan {
@@ -70,7 +71,10 @@ img {
   z-index: 49;
   pointer-events: none;
   background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px);
-  mix-blend-mode: multiply;
+}
+/* while a photo or video is open full screen, hold the grain still */
+body.viewing .grain {
+  animation-play-state: paused;
 }
 @keyframes grain {
   0% {
