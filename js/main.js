@@ -14,7 +14,9 @@
 })();
 
 // lightbox
-const tiles = [...document.querySelectorAll('#gallery button.tile')];
+// each photo group (the gallery, the night) gets its own viewer sequence
+const groups = [...document.querySelectorAll('#gallery, .night')].map((g) => [...g.querySelectorAll('button.tile')]);
+let tiles = groups[0];
 const lb = document.getElementById('lb'),
   img = document.getElementById('lbImg'),
   cap = document.getElementById('lbCap'),
@@ -71,7 +73,14 @@ function close() {
   document.dispatchEvent(new Event('viewer:close'));
   lastFocus && lastFocus.focus();
 }
-tiles.forEach((t, i) => t.addEventListener('click', () => open(i)));
+groups.forEach((g) =>
+  g.forEach((t, i) =>
+    t.addEventListener('click', () => {
+      tiles = g;
+      open(i);
+    }),
+  ),
+);
 document.getElementById('lbClose').onclick = close;
 document.getElementById('lbPrev').onclick = () => show(cur - 1);
 document.getElementById('lbNext').onclick = () => show(cur + 1);
@@ -105,7 +114,7 @@ if (matchMedia('(hover: none)').matches && 'IntersectionObserver' in window) {
     (es) => es.forEach((e) => e.target.classList.toggle('on', e.isIntersecting)),
     { rootMargin: '-40% 0px -40% 0px' },
   );
-  tiles.forEach((t) => io.observe(t));
+  groups.flat().forEach((t) => io.observe(t));
 }
 // mailing list (placeholder until a sign-up service is connected)
 document.getElementById('newsForm').addEventListener('submit', (e) => {
@@ -130,7 +139,6 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     ['.tape-banner-text'],
     ['.reel'],
     ['#night .head'],
-    ['.night .ph'],
     ['.night-note'],
     ['#soundtrack .head', '.sound iframe'],
     ['.foot-cols > div'],
@@ -159,7 +167,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   once('.rv', 'in', { rootMargin: '0px 0px -12% 0px' });
 
   // 2. photos develop once their image has loaded and they're well on screen
-  once('#gallery .tile', 'seen', { rootMargin: '0px 0px -18% 0px' }, (t) => {
+  once('#gallery .tile, .night .tile', 'seen', { rootMargin: '0px 0px -18% 0px' }, (t) => {
     const im = t.querySelector('img'),
       go = () => setTimeout(() => t.classList.add('dev'), 120);
     im.complete && im.naturalWidth ? go() : im.addEventListener('load', go, { once: true });
