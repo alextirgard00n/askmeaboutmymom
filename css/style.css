@@ -402,6 +402,14 @@ body.viewing .grain {
   background: var(--ink-2);
   margin-bottom: clamp(32px, 5vw, 64px);
 }
+@media (max-width: 720px) {
+  /* phones: let the footage run tall instead of a thin strip */
+  .tape-banner {
+    height: 72svh;
+    min-height: 460px;
+    max-height: 720px;
+  }
+}
 .tape-banner video {
   opacity: 0;
   transition: opacity 1.6s ease;
