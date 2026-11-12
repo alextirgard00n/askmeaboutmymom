@@ -400,7 +400,7 @@ body.viewing .grain {
   min-height: 360px;
   overflow: hidden;
   background: var(--ink-2);
-  margin-bottom: 12px;
+  margin-bottom: clamp(32px, 5vw, 64px);
 }
 .tape-banner video {
   opacity: 0;
