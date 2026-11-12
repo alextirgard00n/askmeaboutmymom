@@ -123,8 +123,8 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   const groups = [
     ['.statement .mono', '.statement p'],
     ['#photos .head'],
-    ['#footage .head'],
-    ['.tape'],
+    ['.tape-banner-text'],
+    ['.reel'],
     ['#night .head'],
     ['.night .ph'],
     ['.night-note'],
@@ -232,34 +232,54 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   });
 })();
 
-// footage player: plays muted while on screen; tap for sound and full controls
+// footage: banner plays muted while on screen; cards and the banner button open the video viewer
 (function () {
-  const fig = document.getElementById('tape');
-  const v = document.getElementById('tapeVideo');
-  const btn = document.getElementById('tapeSound');
-  const txt = document.getElementById('tapeSoundText');
+  const banner = document.getElementById('bannerVideo');
+  const vb = document.getElementById('vb');
+  const vbVideo = document.getElementById('vbVideo');
+  const vbTitle = document.getElementById('vbTitle');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (still) v.controls = true;
-
-  btn.addEventListener('click', () => {
-    v.muted = !v.muted;
-    if (!v.muted) {
-      v.controls = true;
-      v.play().catch(() => {});
-    }
-    fig.classList.toggle('sound-on', !v.muted);
-    txt.textContent = v.muted ? 'tap for sound' : 'sound off';
-    btn.setAttribute('aria-label', v.muted ? 'Turn sound on' : 'Turn sound off');
-  });
+  let lastFocus = null;
 
   if (!still && 'IntersectionObserver' in window) {
     new IntersectionObserver(
       (es) =>
         es.forEach((e) => {
-          if (e.isIntersecting) v.play().catch(() => {});
-          else v.pause();
+          if (e.isIntersecting && vb.hidden) banner.play().catch(() => {});
+          else banner.pause();
         }),
-      { threshold: 0.35 },
-    ).observe(v);
+      { threshold: 0.25 },
+    ).observe(banner);
   }
+
+  function openVideo(src, title) {
+    lastFocus = document.activeElement;
+    banner.pause();
+    vbTitle.textContent = title || '';
+    vbVideo.src = src;
+    vb.hidden = false;
+    document.body.style.overflow = 'hidden';
+    vbVideo.play().catch(() => {});
+    document.getElementById('vbClose').focus();
+  }
+  function closeVideo() {
+    vbVideo.pause();
+    vbVideo.removeAttribute('src');
+    vbVideo.load();
+    vb.hidden = true;
+    document.body.style.overflow = '';
+    if (!still) banner.play().catch(() => {});
+    lastFocus && lastFocus.focus();
+  }
+
+  document.querySelectorAll('[data-video]').forEach((el) =>
+    el.addEventListener('click', () => openVideo(el.dataset.video, el.dataset.title)),
+  );
+  document.getElementById('vbClose').addEventListener('click', closeVideo);
+  vb.addEventListener('click', (e) => {
+    if (e.target === vb) closeVideo();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!vb.hidden && e.key === 'Escape') closeVideo();
+  });
 })();

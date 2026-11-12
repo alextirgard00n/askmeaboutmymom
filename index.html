@@ -154,30 +154,59 @@
         </div>
       </section>
 
-      <section class="wrap" id="footage">
-        <div class="head">
+      <section class="tape-banner" id="footage" aria-label="Footage">
+        <video
+          id="bannerVideo"
+          src="media/video/found-tapes.mp4"
+          poster="media/video/found-tapes-poster.jpg"
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          aria-hidden="true"
+        ></video>
+        <div class="tape-banner-text">
+          <p class="mono">found tapes · 1980–1990</p>
           <h2 class="label">footage</h2>
-          <span class="mono">found tapes · 1980–1990</span>
-        </div>
-        <figure class="tape" id="tape">
-          <video
-            id="tapeVideo"
-            src="media/video/found-tapes.mp4"
-            poster="media/video/found-tapes-poster.jpg"
-            width="720"
-            height="528"
-            muted
-            loop
-            playsinline
-            preload="metadata"
-          ></video>
-          <button class="tape-sound" id="tapeSound" type="button" aria-label="Turn sound on">
-            <span class="tape-rec"></span><span id="tapeSoundText">tap for sound</span>
+          <button
+            class="tape-banner-btn"
+            type="button"
+            data-video="media/video/found-tapes.mp4"
+            data-title="found tapes"
+          >
+            watch with sound
           </button>
-          <figcaption class="tape-meta">
-            <span class="label">found tapes, 1980–1990</span><span class="mono">0:59</span>
-          </figcaption>
-        </figure>
+        </div>
+      </section>
+
+      <section class="wrap" aria-label="More tapes">
+        <div class="reels">
+          <button
+            class="reel"
+            type="button"
+            data-video="media/video/found-tapes.mp4"
+            data-title="found tapes"
+          >
+            <img src="media/video/found-tapes-poster.jpg" alt="" loading="lazy" />
+            <span class="play"></span>
+            <span class="meta"><span class="label">found tapes</span><span class="mono">0:59</span></span>
+          </button>
+          <button class="reel" type="button" data-title="mic check">
+            <img src="media/img/footage/mic.jpg" alt="" loading="lazy" />
+            <span class="play"></span>
+            <span class="meta"><span class="label">mic check</span><span class="mono">soon</span></span>
+          </button>
+          <button class="reel" type="button" data-title="the backrooms">
+            <img src="media/img/footage/hall.jpg" alt="" loading="lazy" />
+            <span class="play"></span>
+            <span class="meta"><span class="label">the backrooms</span><span class="mono">soon</span></span>
+          </button>
+          <button class="reel" type="button" data-title="watching you">
+            <img src="media/img/footage/closeup.jpg" alt="" loading="lazy" />
+            <span class="play"></span>
+            <span class="meta"><span class="label">watching you</span><span class="mono">soon</span></span>
+          </button>
+        </div>
       </section>
 
       <section class="wrap" id="soundtrack">
@@ -283,6 +312,14 @@
         </footer>
       </div>
     </main>
+
+    <div class="vb" id="vb" hidden role="dialog" aria-modal="true" aria-label="Video player">
+      <div class="vb-top">
+        <span class="label" id="vbTitle"></span>
+        <button id="vbClose" type="button">close</button>
+      </div>
+      <div class="vb-stage"><video id="vbVideo" controls playsinline preload="none"></video></div>
+    </div>
 
     <div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
       <div class="lb-top">

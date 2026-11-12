@@ -1,4 +1,4 @@
-/* Layout: full-bleed photo opener, then a single quiet column of text, an image wall, footage and the night itself. Monochrome, VHS grain over everything. */
+/* Layout: full-bleed photo opener, then a single quiet column of text, an image wall, footage reels and the night itself. Monochrome, VHS grain over everything. */
 :root {
   --ink: #0a0a09;
   --ink-2: #151513;
@@ -23,6 +23,7 @@ html {
   background: var(--ink);
 }
 body {
+  margin: 0;
   background: var(--ink);
   color: var(--paper);
   font-family: var(--body);
@@ -388,75 +389,140 @@ img {
   text-align: center;
 }
 
-/* footage */
-.tape {
+/* footage: full-width banner */
+.tape-banner {
   position: relative;
-  max-width: 960px;
-  margin: 0 auto clamp(80px, 12vw, 140px);
-  background: var(--ink-2);
-  aspect-ratio: 720 / 528;
+  height: min(78vh, 62vw);
+  min-height: 360px;
   overflow: hidden;
+  background: var(--ink-2);
+  margin-bottom: 12px;
 }
-.tape video {
-  display: block;
+.tape-banner video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: var(--ink-2);
+  filter: saturate(0.8) contrast(1.05);
 }
-.tape::after {
+.tape-banner::after {
   content: '';
   position: absolute;
   inset: 0;
-  pointer-events: none;
-  background: linear-gradient(transparent 70%, rgba(10, 10, 9, 0.75));
+  background:
+    linear-gradient(to bottom, rgba(10, 10, 9, 0.55), transparent 30%, transparent 60%, rgba(10, 10, 9, 0.85)),
+    rgba(10, 10, 9, 0.25);
 }
-.tape.sound-on::after,
-.tape.sound-on .tape-meta {
-  opacity: 0;
-}
-.tape-sound {
+.tape-banner-text {
   position: absolute;
   z-index: 2;
-  top: 14px;
-  right: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border: 1px solid rgba(232, 229, 222, 0.35);
-  background: rgba(10, 10, 9, 0.55);
-  color: var(--paper);
+  inset: auto 0 clamp(32px, 7vh, 72px);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  text-align: center;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.tape-banner-text p {
+  margin: 0;
+  color: rgba(232, 229, 222, 0.75);
+}
+.tape-banner-text h2 {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 300;
+}
+.tape-banner-btn {
+  margin-top: 6px;
+  padding: 12px 22px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 0;
   font-family: var(--mono);
   font-size: 11px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   cursor: pointer;
+  transition: background 0.2s;
 }
-.tape-sound:hover {
-  border-color: var(--paper);
+.tape-banner-btn:hover {
+  background: #fff;
 }
-.tape-rec {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--rec);
-  animation: blink 1.4s steps(2) infinite;
+
+/* footage: cards */
+.reels {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding-bottom: clamp(80px, 12vw, 140px);
 }
-.tape-meta {
+@media (max-width: 900px) {
+  .reels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.reel {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+  position: relative;
+  aspect-ratio: 9/14;
+  overflow: hidden;
+  background: var(--ink-2);
+}
+.reel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.55) contrast(1.1);
+}
+.reel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(transparent 55%, rgba(10, 10, 9, 0.85));
+}
+.reel .play {
   position: absolute;
   z-index: 2;
-  left: 14px;
-  right: 14px;
-  bottom: 12px;
+  top: 50%;
+  left: 50%;
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  border: 1px solid rgba(232, 229, 222, 0.7);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.reel .play::before {
+  content: '';
+  border-left: 12px solid var(--paper);
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  margin-left: 3px;
+}
+.reel .meta {
+  position: absolute;
+  z-index: 2;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
   display: flex;
   justify-content: space-between;
   gap: 8px;
   color: rgba(232, 229, 222, 0.85);
-  pointer-events: none;
-  transition: opacity 0.3s;
 }
-.tape-meta .label {
+.reel .meta span:first-child {
   font-size: 14px;
 }
 
@@ -814,4 +880,64 @@ footer {
   .tile img {
     transition: none;
   }
+}
+
+.reel:not([data-video]) {
+  cursor: default;
+}
+.reel:not([data-video]) .play {
+  opacity: 0.35;
+}
+.reel img {
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.reel[data-video]:hover img,
+.reel[data-video]:focus-visible img {
+  transform: scale(1.04);
+}
+
+/* video viewer */
+.vb {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  z-index: 60;
+  background: var(--ink);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px))
+    calc(14px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.vb-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.vb-stage {
+  position: relative;
+  min-height: 0;
+  margin-top: 12px;
+}
+.vb-stage video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--ink);
+}
+.vb button {
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+.vb button:hover {
+  border-color: var(--dim);
 }
