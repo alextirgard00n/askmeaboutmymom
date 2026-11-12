@@ -240,16 +240,49 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   const vbTitle = document.getElementById('vbTitle');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let lastFocus = null;
+  let inView = false;
 
-  if (!still && 'IntersectionObserver' in window) {
-    new IntersectionObserver(
-      (es) =>
-        es.forEach((e) => {
-          if (e.isIntersecting && vb.hidden) banner.play().catch(() => {});
-          else banner.pause();
-        }),
-      { threshold: 0.25 },
-    ).observe(banner);
+  // the banner video only starts downloading once the visitor scrolls close to it,
+  // then fades in once its first frame is ready
+  function loadBanner() {
+    if (banner.src) return;
+    banner.addEventListener(
+      'loadeddata',
+      () => {
+        banner.classList.add('ready');
+        if (inView && vb.hidden && !still) banner.play().catch(() => {});
+      },
+      { once: true },
+    );
+    banner.preload = 'auto';
+    banner.src = banner.dataset.src;
+  }
+
+  if ('IntersectionObserver' in window) {
+    const near = new IntersectionObserver(
+      (es) => {
+        if (es.some((e) => e.isIntersecting)) {
+          loadBanner();
+          near.disconnect();
+        }
+      },
+      { rootMargin: '0px 0px 50% 0px' },
+    );
+    near.observe(banner);
+
+    if (!still) {
+      new IntersectionObserver(
+        (es) =>
+          es.forEach((e) => {
+            inView = e.isIntersecting;
+            if (inView && vb.hidden && banner.src) banner.play().catch(() => {});
+            else banner.pause();
+          }),
+        { threshold: 0.25 },
+      ).observe(banner);
+    }
+  } else {
+    loadBanner();
   }
 
   function openVideo(src, title) {
@@ -268,7 +301,7 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
     vbVideo.load();
     vb.hidden = true;
     document.body.style.overflow = '';
-    if (!still) banner.play().catch(() => {});
+    if (!still && banner.src) banner.play().catch(() => {});
     lastFocus && lastFocus.focus();
   }
 
