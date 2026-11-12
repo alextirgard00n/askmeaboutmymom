@@ -189,8 +189,10 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   let W, H, dpr, motes;
   function size() {
     dpr = 1; // specks are tiny, full retina resolution isn't needed
+    // size to the tallest the screen can get, so the canvas doesn't resize (and blink)
+    // every time iPhone Safari's toolbars show or hide while scrolling
     W = innerWidth;
-    H = innerHeight;
+    H = Math.max(innerHeight, document.documentElement.clientHeight, screen.height || 0);
     c.width = W * dpr;
     c.height = H * dpr;
     x.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -208,7 +210,9 @@ document.getElementById('newsForm').addEventListener('submit', (e) => {
   }
   size();
   motes = Array.from({ length: Math.round(Math.min(W, 1400) / 28) }, make);
-  addEventListener('resize', size);
+  addEventListener('resize', () => {
+    if (innerWidth !== W) size(); // only real width changes (rotation, window resize)
+  });
   let last = 0,
     on = true;
   document.addEventListener('visibilitychange', () => {

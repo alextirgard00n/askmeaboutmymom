@@ -57,7 +57,8 @@ img {
 /* grain + scanlines */
 .grain {
   position: fixed;
-  inset: -12%;
+  /* extra overscan so the grain still covers the screen while iPhone Safari's toolbars slide in and out */
+  inset: -25%;
   z-index: 50;
   pointer-events: none;
   opacity: 0.09;
@@ -67,7 +68,7 @@ img {
 }
 .scan {
   position: fixed;
-  inset: 0;
+  inset: -20vh 0;
   z-index: 49;
   pointer-events: none;
   background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.18) 0 1px, transparent 1px 3px);
@@ -793,9 +794,10 @@ footer {
 /* ---------- scroll effects (only when motion is allowed; see .fx in script) ---------- */
 #dust {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
   width: 100%;
-  height: 100%;
+  height: 100lvh;
   z-index: 48;
   pointer-events: none;
 }
