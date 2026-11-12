@@ -943,3 +943,56 @@ footer {
 .vb button:hover {
   border-color: var(--dim);
 }
+
+/* privacy page */
+.legal {
+  max-width: 680px;
+  margin: 0 auto;
+  padding-block: clamp(48px, 10vw, 120px) clamp(80px, 12vw, 140px);
+  font-size: 16px;
+  line-height: 1.7;
+}
+.legal-back {
+  display: inline-block;
+  margin-bottom: 48px;
+  text-decoration: none;
+}
+.legal-back:hover {
+  color: var(--paper);
+}
+.legal h1 {
+  margin: 0 0 20px;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 300;
+}
+.legal-lede {
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.5;
+  color: var(--paper);
+  margin: 0 0 48px;
+}
+.legal h2 {
+  margin: 40px 0 10px;
+  color: var(--paper);
+  font-weight: 500;
+}
+.legal p:not(.legal-lede),
+.legal li {
+  color: var(--dim);
+}
+.legal ul {
+  padding-left: 1.1em;
+  display: grid;
+  gap: 14px;
+}
+.legal strong {
+  color: var(--paper);
+  font-weight: 500;
+}
+.legal a:not(.legal-back) {
+  color: var(--paper);
+  text-underline-offset: 3px;
+}
+.legal-date {
+  margin-top: 56px;
+}
